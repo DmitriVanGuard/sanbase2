@@ -210,7 +210,8 @@ export const Account = ({
                 autoFocus={false}
                 disabled={isUsernamePending}
                 placeholder={
-                  user.username !== user.ethAccounts[0].address ? user.username : undefined
+                  user.username
+                  // user.username !== user.ethAccounts[0].address ? user.username : undefined
                   /* TODO: Change user store schema */
                 }
                 className='account-settings-email__input'
@@ -247,9 +248,9 @@ export const Account = ({
                 labelPosition: 'right',
                 icon: 'copy',
                 content: 'Copy',
-                onClick: () => copy(user.ethAccounts[0].address)
+                onClick: () => copy(user.ethAccounts && user.ethAccounts[0].address)
               }}
-              defaultValue={user.ethAccounts[0].address}
+              defaultValue={user.ethAccounts && user.ethAccounts[0].address}
             />
           </Form.Field>
         </Form>
