@@ -1,11 +1,28 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Input, Message, Divider, Button } from 'semantic-ui-react'
+import { Message } from 'semantic-ui-react'
 import AccountHeader from './AccountHeader'
+import AccountEmailForm from './AccountEmailForm'
+import AccountUsernameForm from './AccountUsernameForm'
+import AccountEthKeyForm from './AccountEthKeyForm'
+import AccountWallets from './AccountWallets'
+import AccountSessions from './AccountSessions'
 // import { changeEmailGQL, changeUsernameGQL } from './accountGQL'
+import { USER_LOGOUT_SUCCESS } from '../../actions/types'
 
+const dispatchUserLogout = () => ({ type: USER_LOGOUT_SUCCESS })
 
-const rAccount = ({ user }) => {
+const dispatchEmailChange = (email) => ({
+  type: 'CHANGE_EMAIL',
+  email
+})
+
+const dispatchUsernameChange = (username) => ({
+  type: 'CHANGE_USERNAME',
+  username
+})
+
+const rAccount = ({ user, loading }) => {
   return (
     <div className='page account'>
       <AccountHeader />
@@ -18,6 +35,14 @@ const rAccount = ({ user }) => {
             'For acces your dashboard from mobile device, you should add email address.'
           ]}
         />}
+      <div className='panel'>
+        <AccountEmailForm />
+        <AccountUsernameForm />
+        <br />
+        <AccountEthKeyForm />
+        <AccountWallets user={user} />
+        <AccountSessions onLogoutBtnClick={dispatchUserLogout} />
+      </div>
     </div>
   )
 }
