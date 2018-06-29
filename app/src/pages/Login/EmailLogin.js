@@ -90,7 +90,7 @@ export const EmailField = ({
   </div>
 )
 
-const UsernameField = ({formApi}) => {
+export const UsernameField = ({formApi}) => {
   return (
     <Fragment>
       <label>Username</label>

@@ -10,7 +10,7 @@ import { Form, Input, Message, Divider, Button } from 'semantic-ui-react'
 import { FadeIn } from 'animate-components'
 import copy from 'copy-to-clipboard'
 import Balance from './../components/Balance'
-import { EmailField } from './../pages/Login/EmailLogin'
+import { EmailField, UsernameField } from './../pages/Login/EmailLogin'
 import { Form as ReactForm } from 'react-form'
 import * as actions from './../actions/types'
 import './Account.css'
@@ -165,6 +165,14 @@ export const Account = ({
               // onSubmit={formApi.submitForm}
               autoComplete='off'
             >
+              <UsernameField
+                autoFocus={false}
+                disabled={isPending}
+                placeholder={user.username || undefined}
+                className='account-settings-email__input'
+                formApi={formApi}
+              />
+
               <input
                 type='text'
                 value={
