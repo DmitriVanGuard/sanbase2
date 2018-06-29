@@ -4,8 +4,10 @@ import Raven from 'raven-js'
 import { EmailField } from '../../pages/Login/EmailLogin'
 import { FadeIn } from 'animate-components'
 import { Button } from 'semantic-ui-react'
+import { graphql } from 'react-apollo'
+import { changeEmailGQL } from './accountGQL'
 
-const AccountEmailForm = ({ user, changeEmail, dispatchEmailChange, isEmailPending, setFormStatus, errorValidator, successValidator }) => {
+const AccountEmailForm = ({ user, changeEmailQuery, dispatchEmailChange, isEmailPending, setFormStatus, errorValidator, successValidator }) => {
   return (
     <ReactForm
       validateError={errorValidator}
@@ -17,8 +19,9 @@ const AccountEmailForm = ({ user, changeEmail, dispatchEmailChange, isEmailPendi
       }}
       onSubmit={(values, _, formApi) => {
         // onEmailPending(true)
+        console.log(changeEmailQuery({ variables: { ...values } }))
         setFormStatus('PENDING', true)
-        changeEmail({ variables: { ...values } })
+        changeEmailQuery({ variables: { ...values } })
           .then(data => {
             setFormStatus('PENDING', false)
             setFormStatus('ERROR', false)
@@ -73,4 +76,4 @@ const AccountEmailForm = ({ user, changeEmail, dispatchEmailChange, isEmailPendi
   )
 }
 
-export default AccountEmailForm
+export default graphql(changeEmailGQL, { name: 'changeEmailQuery' })(AccountEmailForm)

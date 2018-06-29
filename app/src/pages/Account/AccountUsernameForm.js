@@ -4,8 +4,10 @@ import Raven from 'raven-js'
 import { UsernameField } from '../../pages/Login/EmailLogin'
 import { FadeIn } from 'animate-components'
 import { Button } from 'semantic-ui-react'
+import { graphql } from 'react-apollo'
+import { changeUsernameGQL } from './accountGQL'
 
-const AccountUsernameForm = ({ user, changeUsername, dispatchUsernameChange, isUsernamePending, setFormStatus, errorValidator, successValidator }) => (<ReactForm
+const AccountUsernameForm = ({ user, changeUsernameQuery, dispatchUsernameChange, isUsernamePending, setFormStatus, errorValidator, successValidator }) => (<ReactForm
   validateError={errorValidator}
   validateSuccess={successValidator}
   onSubmitFailure={(error, ...rest) => {
@@ -16,7 +18,7 @@ const AccountUsernameForm = ({ user, changeUsername, dispatchUsernameChange, isU
   onSubmit={(values, _, formApi) => {
     // onUsernamePending(true)
     setFormStatus('PENDING', true)
-    changeUsername({ variables: { ...values } })
+    changeUsernameQuery({ variables: { ...values } })
       .then(() => {
         setFormStatus('PENDING', false)
         setFormStatus('ERROR', false)
@@ -74,4 +76,4 @@ const AccountUsernameForm = ({ user, changeUsername, dispatchUsernameChange, isU
   )}
 </ReactForm>)
 
-export default AccountUsernameForm
+export default graphql(changeUsernameGQL, { name: 'changeUsernameQuery' })(AccountUsernameForm)

@@ -9,10 +9,10 @@ import { compose, withState, pure } from 'recompose'
 import { Form, Input, Message, Divider, Button } from 'semantic-ui-react'
 import { FadeIn } from 'animate-components'
 import copy from 'copy-to-clipboard'
-import Balance from './../components/Balance'
-import { EmailField, UsernameField } from './../pages/Login/EmailLogin'
+import Balance from '../../components/Balance'
+import { EmailField, UsernameField } from '../../pages/Login/EmailLogin'
 import { Form as ReactForm } from 'react-form'
-import * as actions from './../actions/types'
+import * as actions from '../../actions/types'
 import './Account.css'
 const validate = require('validate.js')
 
@@ -129,6 +129,7 @@ export const Account = ({
           }}
           onSubmit={(values, _, formApi) => {
             onEmailPending(true)
+            console.log(changeEmail)
             changeEmail({ variables: { ...values } })
               .then(data => {
                 onEmailPending(false)

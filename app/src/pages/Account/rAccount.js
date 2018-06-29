@@ -1,15 +1,14 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Message } from 'semantic-ui-react'
-import { graphql } from 'react-apollo'
 import AccountHeader from './AccountHeader'
 import AccountEmailForm from './AccountEmailForm'
 import AccountUsernameForm from './AccountUsernameForm'
 import AccountEthKeyForm from './AccountEthKeyForm'
 import AccountWallets from './AccountWallets'
 import AccountSessions from './AccountSessions'
-import { changeEmailGQL, changeUsernameGQL } from './accountGQL'
 import { USER_LOGOUT_SUCCESS } from '../../actions/types'
+import './Account.css'
 const validate = require('validate.js')
 
 const dispatchUserLogout = () => ({ type: USER_LOGOUT_SUCCESS })
@@ -52,29 +51,121 @@ const successValidator = ({ email, username }) => {
   }
 }
 
-const setFormStatus = (form) => (status, value) => { form[status] = value }
+// const setFormStatus = (form) => (status, value) => { form[status] = value }
 
-// const formStatus = {
-//   email: {
-//     set: setCurrentFormStatus
-//   },
-//   username: {
-//     set: setCurrentFormStatus
-//   }
+// const emailForm = {
+//   PENDING: false,
+//   ERROR: false,
+//   SUCCESS: false
 // }
 
-const emailForm = {
-  PENDING: false,
-  ERROR: false,
-  SUCCESS: false
-}
+// const usernameForm = {
+//   PENDING: false,
+//   ERROR: false,
+//   SUCCESS: false
+// }
 
-const usernameForm = {
-  PENDING: false,
-  ERROR: false,
-  SUCCESS: false
-}
+class rAccount extends Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      email: {
+        PENDING: false,
+        ERROR: false,
+        SUCCESS: false
+      },
+      username: {
+        PENDING: false,
+        ERROR: false,
+        SUCCESS: false
+      }
+    }
+  }
+
+  setFormStatus(form) {
+    return (status, value) => {
+      this.setState(prevState => {
+        const newFormState = { ...prevState[form] }
+        newFormState[status] = value
+        return {
+          ...prevState,
+          [form]: newFormState
+        }
+      })
+    }
+  }
+
+  render() {
+    const { user, loading } = this.props
+    const { email, username } = this.state
+    return (
+      <div className='page account'>
+        <AccountHeader />
+        {!user.email &&
+          <Message
+            className='account-message'
+            warning
+            header='Email is not added yet!'
+            list={[
+              'For acces your dashboard from mobile device, you should add email address.'
+            ]}
+          />}
+
+        {email.SUCCESS &&
+          <Message
+            className='account-message'
+            positive
+            content={`Email was changed to ${user.email}!`}
+          />}
+        {email.ERROR &&
+          <Message
+            className='account-message'
+            negative
+            header='Email is not changed!'
+            list={['Try again later...']}
+          />}
+        {username.SUCCESS &&
+          <Message
+            className='account-message'
+            positive
+            content={`Username was changed to ${user.username}!`}
+          />}
+        {username.ERROR &&
+          <Message
+            className='account-message'
+            negative
+            header='Failed to change username!'
+            list={['Try again later...']}
+          />}
+
+        <div className='panel'>
+          <AccountEmailForm
+            user={user}
+            dispatchEmailChange={dispatchEmailChange}
+            successValidator={successValidator}
+            errorValidator={errorValidator}
+            setFormStatus={this.setFormStatus('email')}
+            isEmailPending={email.PENDING}
+          />
+          <AccountUsernameForm
+            user={user}
+            dispatchUsernameChange={dispatchUsernameChange}
+            successValidator={successValidator}
+            errorValidator={errorValidator}
+            setFormStatus={this.setFormStatus('username')}
+            isUsernamePending={username.PENDING}
+          />
+          <br />
+          <AccountEthKeyForm user={user} loading={loading} />
+          <AccountWallets user={user} />
+          <AccountSessions onLogoutBtnClick={dispatchUserLogout} />
+        </div>
+      </div>
+    )
+  }
+}
+/*
 const rAccount = ({ user, loading, emailForm, usernameForm, setEmailFormStatus, setUsernameFormStatus }) => {
   return (
     <div className='page account'>
@@ -125,7 +216,7 @@ const rAccount = ({ user, loading, emailForm, usernameForm, setEmailFormStatus, 
           errorValidator={errorValidator}
           setFormStatus={setEmailFormStatus}
           isEmailPending={emailForm.PENDING}
-          />
+        />
         <AccountUsernameForm
           user={user}
           changeUsername={graphql(changeUsernameGQL, { name: 'changeUsername' })}
@@ -143,17 +234,15 @@ const rAccount = ({ user, loading, emailForm, usernameForm, setEmailFormStatus, 
     </div>
   )
 }
-
+ */
 const mapStateToProps = state => ({
   user: state.user.data,
-  loading: state.user.isLoading,
-  emailForm,
-  usernameForm
+  loading: state.user.isLoading
 })
 
-const mapDispatchToProps = dispatch => ({
-  setEmailFormStatus: setFormStatus(emailForm),
-  setUsernameFormStatus: setFormStatus(usernameForm)
-})
+// const mapDispatchToProps = dispatch => ({
+//   setEmailFormStatus: setFormStatus(emailForm),
+//   setUsernameFormStatus: setFormStatus(usernameForm)
+// })
 
-export default connect(mapStateToProps, mapDispatchToProps)(rAccount)
+export default connect(mapStateToProps)(rAccount)
