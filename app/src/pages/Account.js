@@ -16,48 +16,30 @@ import * as actions from './../actions/types'
 import './Account.css'
 const validate = require('validate.js')
 
-const validateFields = email => {
+const validateFields = (email, username) => {
   var constraints = {
     email: {
       email: true
-    }
-  }
-  return validate({ email }, constraints)
-}
-
-const errorValidator = ({ email }) => {
-  const validation = validateFields(email)
-  return {
-    email: validation && validation.email
-  }
-}
-
-const successValidator = ({ email }) => {
-  const validation = validateFields(email)
-  return {
-    email: typeof validation === 'undefined' || !validation.email
-  }
-}
-
-const validateUsernameField = username => {
-  const constraints = {
+    },
     username: {
-      username: true
+      length: { minimum: 3 }
     }
   }
-  return validate({ username }, constraints)
+  return validate({ email, username }, constraints)
 }
 
-const usernameErrorValidator = ({ username }) => {
-  const validation = validateUsernameField(username)
+const errorValidator = ({ email, username }) => {
+  const validation = validateFields(email, username)
   return {
+    email: validation && validation.email,
     username: validation && validation.username
   }
 }
 
-const usernameSuccessValidator = ({ username }) => {
-  const validation = validateUsernameField(username)
+const successValidator = ({ email, username }) => {
+  const validation = validateFields(email, username)
   return {
+    email: typeof validation === 'undefined' || !validation.email,
     username: typeof validation === 'undefined' || !validation.username
   }
 }
@@ -183,7 +165,14 @@ export const Account = ({
               // onSubmit={formApi.submitForm}
               autoComplete='off'
             >
-              <input type='text' value={user.username} />
+              <input
+                type='text'
+                value={
+                  user.username === user.ethAccounts[0].address // TODO: Change user store schema
+                    ? ''
+                    : user.username
+                }
+              />
 
             </form>
           )}
@@ -191,7 +180,7 @@ export const Account = ({
         <br />
         <Form loading={loading}>
           <Form.Field>
-            <label>Username or Eth Public Key</label>
+            <label>Eth Public Key</label>
             <Input
               input={{ readOnly: true }}
               action={{
@@ -199,9 +188,9 @@ export const Account = ({
                 labelPosition: 'right',
                 icon: 'copy',
                 content: 'Copy',
-                onClick: () => copy(user.username)
+                onClick: () => copy(user.ethAccounts[0].address)
               }}
-              defaultValue={user.username}
+              defaultValue={user.ethAccounts[0].address}
             />
           </Form.Field>
         </Form>
