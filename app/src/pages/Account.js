@@ -156,8 +156,28 @@ export const Account = ({
           )}
         </ReactForm>
         <ReactForm
-        // validateError={usernameErrorValidator}
-        // validateSuccess={usernameSuccessValidator}
+          validateError={errorValidator}
+          validateSuccess={successValidator}
+          onSubmitFailure={(error, ...rest) => {
+            onError(true)
+            Raven.captureException(`User try to change email: ${error} ${rest}`)
+          }}
+          onSubmit={(values, _, formApi) => {
+            onPending(true)
+            changeEmail({ variables: { ...values } })
+              .then(data => {
+                onPending(false)
+                onSuccess(true)
+                onError(false)
+                changedEmail(values.email)
+                formApi.resetAll()
+              })
+              .catch(error => {
+                onPending(false)
+                onError(true)
+                Raven.captureException(`User try to change email: ${error}`)
+              })
+          }}
         >
           {formApi => (
             <form
@@ -173,14 +193,29 @@ export const Account = ({
                 formApi={formApi}
               />
 
-              <input
+              {/* <input
                 type='text'
                 value={
                   user.username === user.ethAccounts[0].address // TODO: Change user store schema
                     ? ''
                     : user.username
                 }
-              />
+              /> */}
+              {formApi.getSuccess().username &&
+                <FadeIn
+                  className='account-settings-email__button-container'
+                  duration='0.7s'
+                  timingFunction='ease-in'
+                  as='div'
+                >
+                  <Button
+                    disabled={!formApi.getSuccess().username || isPending}
+                    positive={!!formApi.getSuccess().username}
+                    type='submit'
+                  >
+                    {isPending ? 'Waiting...' : 'Submit'}
+                  </Button>
+                </FadeIn>}
 
             </form>
           )}
