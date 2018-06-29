@@ -58,11 +58,14 @@ const isErrorEmail = formApi => (
   !!formApi.getError().email
 )
 
-const isErrorUsername = formApi => (
-  !!formApi.getValue().username &&
-  formApi.getTouched().username &&
-  !!formApi.getError().username
-)
+const isErrorUsername = formApi => {
+  console.log(formApi.getValue(), formApi.getTouched(), formApi.getError())
+  return (
+    !!formApi.getValue().username &&
+    formApi.getTouched().username &&
+    !!formApi.getError().username
+  )
+}
 
 export const EmailField = ({
   formApi,

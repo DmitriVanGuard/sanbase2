@@ -52,12 +52,18 @@ export const Account = ({
   changedEmail,
   changeUsername,
   changedUsername,
-  isError = false,
-  isSuccess = false,
-  isPending,
-  onSuccess,
-  onError,
-  onPending
+  isEmailError = false,
+  isEmailSuccess = false,
+  isEmailPending,
+  onEmailSuccess,
+  onEmailError,
+  onEmailPending,
+  isUsernameError = false,
+  isUsernameSuccess = false,
+  isUsernamePending,
+  onUsernameSuccess,
+  onUsernameError,
+  onUsernamePending
 }) => {
   if (user && !user.username) {
     return (
@@ -87,17 +93,30 @@ export const Account = ({
             'For acces your dashboard from mobile device, you should add email address.'
           ]}
         />}
-      {isSuccess &&
+      {isEmailSuccess &&
         <Message
           className='account-message'
           positive
           content={`Email was changed to ${user.email}!`}
         />}
-      {isError &&
+      {isEmailError &&
         <Message
           className='account-message'
           negative
           header='Email is not changed!'
+          list={['Try again later...']}
+        />}
+      {isUsernameSuccess &&
+        <Message
+          className='account-message'
+          positive
+          content={`Username was changed to ${user.username}!`}
+        />}
+      {isUsernameError &&
+        <Message
+          className='account-message'
+          negative
+          header='Failed to change username!'
           list={['Try again later...']}
         />}
       <div className='panel'>
@@ -105,22 +124,22 @@ export const Account = ({
           validateError={errorValidator}
           validateSuccess={successValidator}
           onSubmitFailure={(error, ...rest) => {
-            onError(true)
+            onEmailError(true)
             Raven.captureException(`User try to change email: ${error} ${rest}`)
           }}
           onSubmit={(values, _, formApi) => {
-            onPending(true)
+            onEmailPending(true)
             changeEmail({ variables: { ...values } })
               .then(data => {
-                onPending(false)
-                onSuccess(true)
-                onError(false)
+                onEmailPending(false)
+                onEmailSuccess(true)
+                onEmailError(false)
                 changedEmail(values.email)
                 formApi.resetAll()
               })
               .catch(error => {
-                onPending(false)
-                onError(true)
+                onEmailPending(false)
+                onEmailError(true)
                 Raven.captureException(`User try to change email: ${error}`)
               })
           }}
@@ -133,7 +152,7 @@ export const Account = ({
             >
               <EmailField
                 autoFocus={false}
-                disabled={isPending}
+                disabled={isEmailPending}
                 placeholder={user.email || undefined}
                 className='account-settings-email__input'
                 formApi={formApi}
@@ -147,11 +166,11 @@ export const Account = ({
                   as='div'
                 >
                   <Button
-                    disabled={!formApi.getSuccess().email || isPending}
+                    disabled={!formApi.getSuccess().email || isEmailPending}
                     positive={!!formApi.getSuccess().email}
                     type='submit'
                   >
-                    {isPending ? 'Waiting...' : 'Submit'}
+                    {isEmailPending ? 'Waiting...' : 'Submit'}
                   </Button>
                 </FadeIn>}
             </form>
@@ -161,23 +180,23 @@ export const Account = ({
           validateError={errorValidator}
           validateSuccess={successValidator}
           onSubmitFailure={(error, ...rest) => {
-            onError(true)
-            Raven.captureException(`User try to change email: ${error} ${rest}`)
+            onUsernameError(true)
+            Raven.captureException(`User try to change username: ${error} ${rest}`)
           }}
           onSubmit={(values, _, formApi) => {
-            onPending(true)
+            onUsernamePending(true)
             changeUsername({ variables: { ...values } })
               .then(data => {
-                onPending(false)
-                onSuccess(true)
-                onError(false)
+                onUsernamePending(false)
+                onUsernameSuccess(true)
+                onUsernameError(false)
                 changedUsername(values.username)
                 formApi.resetAll()
               })
               .catch(error => {
-                onPending(false)
-                onError(true)
-                Raven.captureException(`User try to change email: ${error}`)
+                onUsernamePending(false)
+                onUsernameError(true)
+                Raven.captureException(`User try to change username: ${error}`)
               })
           }}
         >
@@ -189,7 +208,7 @@ export const Account = ({
             >
               <UsernameField
                 autoFocus={false}
-                disabled={isPending}
+                disabled={isUsernamePending}
                 placeholder={
                   user.username !== user.ethAccounts[0].address ? user.username : undefined
                   /* TODO: Change user store schema */
@@ -206,11 +225,11 @@ export const Account = ({
                   as='div'
                 >
                   <Button
-                    disabled={!formApi.getSuccess().username || isPending}
+                    disabled={!formApi.getSuccess().username || isUsernamePending}
                     positive={!!formApi.getSuccess().username}
                     type='submit'
                   >
-                    {isPending ? 'Waiting...' : 'Submit'}
+                    {isUsernamePending ? 'Waiting...' : 'Submit'}
                   </Button>
                 </FadeIn>}
 
@@ -295,9 +314,12 @@ const changeUsernameGQL = gql`
 
 const enhance = compose(
   connect(mapStateToProps, mapDispatchToProps),
-  withState('isPending', 'onPending', false),
-  withState('isError', 'onError', false),
-  withState('isSuccess', 'onSuccess', false),
+  withState('isEmailPending', 'onEmailPending', false),
+  withState('isEmailError', 'onEmailError', false),
+  withState('isEmailSuccess', 'onEmailSuccess', false),
+  withState('isUsernamePending', 'onUsernamePending', false),
+  withState('isUsernameError', 'onUsernameError', false),
+  withState('isUsernameSuccess', 'onUsernameSuccess', false),
   graphql(changeEmailGQL, {
     name: 'changeEmail'
   }),
