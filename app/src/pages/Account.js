@@ -50,6 +50,8 @@ export const Account = ({
   logout,
   changeEmail,
   changedEmail,
+  changeUsername,
+  changedUsername,
   isError = false,
   isSuccess = false,
   isPending,
@@ -164,12 +166,12 @@ export const Account = ({
           }}
           onSubmit={(values, _, formApi) => {
             onPending(true)
-            changeEmail({ variables: { ...values } })
+            changeUsername({ variables: { ...values } })
               .then(data => {
                 onPending(false)
                 onSuccess(true)
                 onError(false)
-                changedEmail(values.email)
+                changedUsername(values.username)
                 formApi.resetAll()
               })
               .catch(error => {
@@ -182,7 +184,7 @@ export const Account = ({
           {formApi => (
             <form
               className='account-settings-email'
-              // onSubmit={formApi.submitForm}
+              onSubmit={formApi.submitForm}
               autoComplete='off'
             >
               <UsernameField
@@ -265,6 +267,12 @@ const mapDispatchToProps = dispatch => {
         type: 'CHANGE_EMAIL',
         email
       })
+    },
+    changedUsername: username => {
+      dispatch({
+        type: 'CHANGE_USERNAME',
+        username
+      })
     }
   }
 }
@@ -277,6 +285,14 @@ const changeEmailGQL = gql`
   }
 `
 
+const changeUsernameGQL = gql`
+  mutation changeUsername($username: String!) {
+    changeUsername(username: $username) {
+      username
+    }
+  }
+`
+
 const enhance = compose(
   connect(mapStateToProps, mapDispatchToProps),
   withState('isPending', 'onPending', false),
@@ -284,6 +300,9 @@ const enhance = compose(
   withState('isSuccess', 'onSuccess', false),
   graphql(changeEmailGQL, {
     name: 'changeEmail'
+  }),
+  graphql(changeUsernameGQL, {
+    name: 'changeUsername'
   }),
   pure
 )

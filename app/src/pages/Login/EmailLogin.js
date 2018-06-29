@@ -70,24 +70,23 @@ export const EmailField = ({
   disabled = false,
   autoFocus = true,
   placeholder = 'you@domain.com'
-}) => (
-    <div className={className}>
-      <label>Email</label>
-      <ReactFormInput
-        fluid
-        disabled={disabled}
-        autoFocus={autoFocus}
-        initvalue=''
-        type='email'
-        field='email'
-        error={isErrorEmail(formApi)}
-        className='email-input'
-        placeholder={placeholder} />
-      {isErrorEmail(formApi) &&
-        <Message negative>
-          {formApi.getError().email}
-        </Message>}
-    </div>
+}) => (<div className={className}>
+  <label>Email</label>
+  <ReactFormInput
+    fluid
+    disabled={disabled}
+    autoFocus={autoFocus}
+    initvalue=''
+    type='email'
+    field='email'
+    error={isErrorEmail(formApi)}
+    className='email-input'
+    placeholder={placeholder} />
+  {isErrorEmail(formApi) &&
+    <Message negative>
+      {formApi.getError().email}
+    </Message>}
+</div>
   )
 
 export const UsernameField = ({ formApi, placeholder = 'Your name' }) => {
