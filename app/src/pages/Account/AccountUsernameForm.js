@@ -1,30 +1,37 @@
 import React from 'react'
 import { Form as ReactForm } from 'react-form'
 import Raven from 'raven-js'
-import { EmailField } from './../pages/Login/EmailLogin'
+import { UsernameField } from '../../pages/Login/EmailLogin'
 import { FadeIn } from 'animate-components'
 import { Button } from 'semantic-ui-react'
 
-const AccountUsernameForm = () => (<ReactForm
+const AccountUsernameForm = ({ user, changeUsername, dispatchUsernameChange, isUsernamePending, setFormStatus, errorValidator, successValidator }) => (<ReactForm
   validateError={errorValidator}
   validateSuccess={successValidator}
   onSubmitFailure={(error, ...rest) => {
-    onUsernameError(true)
+    // onUsernameError(true)
+    setFormStatus('ERROR', true)
     Raven.captureException(`User try to change username: ${error} ${rest}`)
   }}
   onSubmit={(values, _, formApi) => {
-    onUsernamePending(true)
+    // onUsernamePending(true)
+    setFormStatus('PENDING', true)
     changeUsername({ variables: { ...values } })
-      .then(data => {
-        onUsernamePending(false)
-        onUsernameSuccess(true)
-        onUsernameError(false)
-        changedUsername(values.username)
+      .then(() => {
+        setFormStatus('PENDING', false)
+        setFormStatus('ERROR', false)
+        setFormStatus('SUCCESS', true)
+        // onUsernamePending(false)
+        // onUsernameSuccess(true)
+        // onUsernameError(false)
+        dispatchUsernameChange(values.username)
         formApi.resetAll()
       })
       .catch(error => {
-        onUsernamePending(false)
-        onUsernameError(true)
+        setFormStatus('PENDING', false)
+        setFormStatus('ERROR', true)
+        // onUsernamePending(false)
+        // onUsernameError(true)
         Raven.captureException(`User try to change username: ${error}`)
       })
   }}

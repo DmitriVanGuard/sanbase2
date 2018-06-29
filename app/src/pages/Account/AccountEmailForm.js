@@ -1,32 +1,39 @@
 import React from 'react'
 import { Form as ReactForm } from 'react-form'
 import Raven from 'raven-js'
-import { EmailField } from './../pages/Login/EmailLogin'
+import { EmailField } from '../../pages/Login/EmailLogin'
 import { FadeIn } from 'animate-components'
 import { Button } from 'semantic-ui-react'
 
-const AccountEmailForm = () => {
+const AccountEmailForm = ({ user, changeEmail, dispatchEmailChange, isEmailPending, setFormStatus, errorValidator, successValidator }) => {
   return (
     <ReactForm
       validateError={errorValidator}
       validateSuccess={successValidator}
       onSubmitFailure={(error, ...rest) => {
-        onEmailError(true)
+        // onEmailError(true)
+        setFormStatus('ERROR', true)
         Raven.captureException(`User try to change email: ${error} ${rest}`)
       }}
       onSubmit={(values, _, formApi) => {
-        onEmailPending(true)
+        // onEmailPending(true)
+        setFormStatus('PENDING', true)
         changeEmail({ variables: { ...values } })
           .then(data => {
-            onEmailPending(false)
-            onEmailSuccess(true)
-            onEmailError(false)
-            changedEmail(values.email)
+            setFormStatus('PENDING', false)
+            setFormStatus('ERROR', false)
+            setFormStatus('SUCCESS', true)
+            // onEmailPending(false)
+            // onEmailSuccess(true)
+            // onEmailError(false)
+            dispatchEmailChange(values.email)
             formApi.resetAll()
           })
           .catch(error => {
-            onEmailPending(false)
-            onEmailError(true)
+            setFormStatus('PENDING', false)
+            setFormStatus('ERROR', true)
+            // onEmailPending(false)
+            // onEmailError(true)
             Raven.captureException(`User try to change email: ${error}`)
           })
       }}
