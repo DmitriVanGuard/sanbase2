@@ -5,18 +5,8 @@ import Raven from 'raven-js'
 import { Redirect } from 'react-router-dom'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import {
-  compose,
-  withState,
-  pure
-} from 'recompose'
-import {
-  Form,
-  Input,
-  Message,
-  Divider,
-  Button
-} from 'semantic-ui-react'
+import { compose, withState, pure } from 'recompose'
+import { Form, Input, Message, Divider, Button } from 'semantic-ui-react'
 import { FadeIn } from 'animate-components'
 import copy from 'copy-to-clipboard'
 import Balance from './../components/Balance'
@@ -32,20 +22,43 @@ const validateFields = email => {
       email: true
     }
   }
-  return validate({email}, constraints)
+  return validate({ email }, constraints)
 }
 
-const errorValidator = ({email}) => {
+const errorValidator = ({ email }) => {
   const validation = validateFields(email)
   return {
     email: validation && validation.email
   }
 }
 
-const successValidator = ({email}) => {
+const successValidator = ({ email }) => {
   const validation = validateFields(email)
   return {
     email: typeof validation === 'undefined' || !validation.email
+  }
+}
+
+const validateUsernameField = username => {
+  const constraints = {
+    username: {
+      username: true
+    }
+  }
+  return validate({ username }, constraints)
+}
+
+const usernameErrorValidator = ({ username }) => {
+  const validation = validateUsernameField(username)
+  return {
+    username: validation && validation.username
+  }
+}
+
+const usernameSuccessValidator = ({ username }) => {
+  const validation = validateUsernameField(username)
+  return {
+    username: typeof validation === 'undefined' || !validation.username
   }
 }
 
@@ -64,9 +77,11 @@ export const Account = ({
 }) => {
   if (user && !user.username) {
     return (
-      <Redirect to={{
-        pathname: '/'
-      }} />
+      <Redirect
+        to={{
+          pathname: '/'
+        }}
+      />
     )
   }
   return (
@@ -99,9 +114,7 @@ export const Account = ({
           className='account-message'
           negative
           header='Email is not changed!'
-          list={[
-            'Try again later...'
-          ]}
+          list={['Try again later...']}
         />}
       <div className='panel'>
         <ReactForm
@@ -113,46 +126,65 @@ export const Account = ({
           }}
           onSubmit={(values, _, formApi) => {
             onPending(true)
-            changeEmail({variables: {...values}})
-            .then(data => {
-              onPending(false)
-              onSuccess(true)
-              onError(false)
-              changedEmail(values.email)
-              formApi.resetAll()
-            })
-            .catch(error => {
-              onPending(false)
-              onError(true)
-              Raven.captureException(`User try to change email: ${error}`)
-            })
-          }}>
+            changeEmail({ variables: { ...values } })
+              .then(data => {
+                onPending(false)
+                onSuccess(true)
+                onError(false)
+                changedEmail(values.email)
+                formApi.resetAll()
+              })
+              .catch(error => {
+                onPending(false)
+                onError(true)
+                Raven.captureException(`User try to change email: ${error}`)
+              })
+          }}
+        >
           {formApi => (
             <form
               className='account-settings-email'
               onSubmit={formApi.submitForm}
-              autoComplete='off'>
+              autoComplete='off'
+            >
               <EmailField
                 autoFocus={false}
                 disabled={isPending}
                 placeholder={user.email || undefined}
                 className='account-settings-email__input'
-                formApi={formApi} />
+                formApi={formApi}
+              />
 
               {formApi.getSuccess().email &&
-              <FadeIn
-                className='account-settings-email__button-container'
-                duration='0.7s' timingFunction='ease-in' as='div'>
-                <Button
-                  disabled={
-                    !formApi.getSuccess().email ||
-                    isPending
-                  }
-                  positive={!!formApi.getSuccess().email}
-                  type='submit'>
-                  {isPending ? 'Waiting...' : 'Submit'}
-                </Button>
-              </FadeIn>}
+                <FadeIn
+                  className='account-settings-email__button-container'
+                  duration='0.7s'
+                  timingFunction='ease-in'
+                  as='div'
+                >
+                  <Button
+                    disabled={!formApi.getSuccess().email || isPending}
+                    positive={!!formApi.getSuccess().email}
+                    type='submit'
+                  >
+                    {isPending ? 'Waiting...' : 'Submit'}
+                  </Button>
+                </FadeIn>}
+            </form>
+          )}
+        </ReactForm>
+        <ReactForm
+        // validateError={usernameErrorValidator}
+        // validateSuccess={usernameSuccessValidator}
+        >
+          {formApi => (
+            <form
+              className='account-settings-email'
+              // onSubmit={formApi.submitForm}
+              autoComplete='off'
+            >
+              <input type='text' value={user.username} />
+
             </form>
           )}
         </ReactForm>
@@ -161,7 +193,7 @@ export const Account = ({
           <Form.Field>
             <label>Username or Eth Public Key</label>
             <Input
-              input={{readOnly: true}}
+              input={{ readOnly: true }}
               action={{
                 color: 'teal',
                 labelPosition: 'right',
@@ -180,11 +212,7 @@ export const Account = ({
         <Divider />
         <div className='account-control'>
           <p>Your current session</p>
-          <Button
-            basic
-            color='red'
-            onClick={logout}
-          >Log out</Button>
+          <Button basic color='red' onClick={logout}>Log out</Button>
         </div>
       </div>
     </div>
@@ -223,10 +251,7 @@ const changeEmailGQL = gql`
 `
 
 const enhance = compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  connect(mapStateToProps, mapDispatchToProps),
   withState('isPending', 'onPending', false),
   withState('isError', 'onError', false),
   withState('isSuccess', 'onSuccess', false),
