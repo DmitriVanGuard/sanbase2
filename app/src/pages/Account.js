@@ -188,19 +188,14 @@ export const Account = ({
               <UsernameField
                 autoFocus={false}
                 disabled={isPending}
-                placeholder={user.username || undefined}
+                placeholder={
+                  user.username !== user.ethAccounts[0].address ? user.username : undefined
+                  /* TODO: Change user store schema */
+                }
                 className='account-settings-email__input'
                 formApi={formApi}
               />
 
-              {/* <input
-                type='text'
-                value={
-                  user.username === user.ethAccounts[0].address // TODO: Change user store schema
-                    ? ''
-                    : user.username
-                }
-              /> */}
               {formApi.getSuccess().username &&
                 <FadeIn
                   className='account-settings-email__button-container'

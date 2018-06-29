@@ -30,13 +30,13 @@ const validateFields = (email, username) => {
       email: true
     },
     username: {
-      length: {minimum: 3}
+      length: { minimum: 3 }
     }
   }
-  return validate({email, username}, constraints)
+  return validate({ email, username }, constraints)
 }
 
-const errorValidator = ({email, username}) => {
+const errorValidator = ({ email, username }) => {
   const validation = validateFields(email, username)
   return {
     email: validation && validation.email,
@@ -44,7 +44,7 @@ const errorValidator = ({email, username}) => {
   }
 }
 
-const successValidator = ({email, username}) => {
+const successValidator = ({ email, username }) => {
   const validation = validateFields(email, username)
   return {
     email: typeof validation === 'undefined' || !validation.email,
@@ -54,14 +54,14 @@ const successValidator = ({email, username}) => {
 
 const isErrorEmail = formApi => (
   !!formApi.getValue().email &&
-    formApi.getTouched().email &&
-    !!formApi.getError().email
+  formApi.getTouched().email &&
+  !!formApi.getError().email
 )
 
 const isErrorUsername = formApi => (
   !!formApi.getValue().username &&
-    formApi.getTouched().username &&
-    !!formApi.getError().username
+  formApi.getTouched().username &&
+  !!formApi.getError().username
 )
 
 export const EmailField = ({
@@ -71,26 +71,26 @@ export const EmailField = ({
   autoFocus = true,
   placeholder = 'you@domain.com'
 }) => (
-  <div className={className}>
-    <label>Email</label>
-    <ReactFormInput
-      fluid
-      disabled={disabled}
-      autoFocus={autoFocus}
-      initvalue=''
-      type='email'
-      field='email'
-      error={isErrorEmail(formApi)}
-      className='email-input'
-      placeholder={placeholder} />
-    {isErrorEmail(formApi) &&
-      <Message negative>
-        {formApi.getError().email}
-      </Message>}
-  </div>
-)
+    <div className={className}>
+      <label>Email</label>
+      <ReactFormInput
+        fluid
+        disabled={disabled}
+        autoFocus={autoFocus}
+        initvalue=''
+        type='email'
+        field='email'
+        error={isErrorEmail(formApi)}
+        className='email-input'
+        placeholder={placeholder} />
+      {isErrorEmail(formApi) &&
+        <Message negative>
+          {formApi.getError().email}
+        </Message>}
+    </div>
+  )
 
-export const UsernameField = ({formApi}) => {
+export const UsernameField = ({ formApi, placeholder = 'Your name' }) => {
   return (
     <Fragment>
       <label>Username</label>
@@ -100,7 +100,7 @@ export const UsernameField = ({formApi}) => {
         field='username'
         error={isErrorUsername(formApi)}
         className='username-input'
-        placeholder='Your name' />
+        placeholder={placeholder} />
       {isErrorUsername(formApi) &&
         <Message negative>
           {formApi.getError().username}
@@ -147,7 +147,7 @@ const EmailLogin = ({
         }}
         onSubmit={values => {
           onPending(true)
-          emailLogin({variables: {...values, consent}})
+          emailLogin({ variables: { ...values, consent } })
             .then(data => {
               onPending(false)
               onSuccess(true)
