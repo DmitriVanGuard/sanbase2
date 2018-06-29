@@ -1,7 +1,8 @@
 import React from 'react'
 import { Form, Input } from 'semantic-ui-react'
+import copy from 'copy-to-clipboard'
 
-const AccountEthKeyForm = () => {
+const AccountEthKeyForm = ({ user, loading }) => {
   return (
     <Form loading={loading}>
       <Form.Field>

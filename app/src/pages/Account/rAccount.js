@@ -39,7 +39,7 @@ const rAccount = ({ user, loading }) => {
         <AccountEmailForm />
         <AccountUsernameForm />
         <br />
-        <AccountEthKeyForm />
+        <AccountEthKeyForm user={user} loading={loading} />
         <AccountWallets user={user} />
         <AccountSessions onLogoutBtnClick={dispatchUserLogout} />
       </div>
