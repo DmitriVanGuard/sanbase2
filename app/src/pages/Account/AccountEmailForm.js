@@ -13,30 +13,24 @@ const AccountEmailForm = ({ user, changeEmailQuery, dispatchEmailChange, isEmail
       validateError={errorValidator}
       validateSuccess={successValidator}
       onSubmitFailure={(error, ...rest) => {
-        // onEmailError(true)
         setFormStatus('ERROR', true)
+        setFormStatus('SUCCESS', false)
         Raven.captureException(`User try to change email: ${error} ${rest}`)
       }}
       onSubmit={(values, _, formApi) => {
-        // onEmailPending(true)
-        console.log(changeEmailQuery({ variables: { ...values } }))
         setFormStatus('PENDING', true)
+        setFormStatus('SUCCESS', false)
         changeEmailQuery({ variables: { ...values } })
           .then(data => {
             setFormStatus('PENDING', false)
             setFormStatus('ERROR', false)
             setFormStatus('SUCCESS', true)
-            // onEmailPending(false)
-            // onEmailSuccess(true)
-            // onEmailError(false)
             dispatchEmailChange(values.email)
             formApi.resetAll()
           })
           .catch(error => {
             setFormStatus('PENDING', false)
             setFormStatus('ERROR', true)
-            // onEmailPending(false)
-            // onEmailError(true)
             Raven.captureException(`User try to change email: ${error}`)
           })
       }}

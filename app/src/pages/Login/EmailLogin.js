@@ -59,7 +59,6 @@ const isErrorEmail = formApi => (
 )
 
 const isErrorUsername = formApi => {
-  console.log(formApi.getValue(), formApi.getTouched(), formApi.getError())
   return (
     !!formApi.getValue().username &&
     formApi.getTouched().username &&

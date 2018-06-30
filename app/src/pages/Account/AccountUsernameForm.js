@@ -13,27 +13,23 @@ const AccountUsernameForm = ({ user, changeUsernameQuery, dispatchUsernameChange
   onSubmitFailure={(error, ...rest) => {
     // onUsernameError(true)
     setFormStatus('ERROR', true)
+    setFormStatus('SUCCESS', false)
     Raven.captureException(`User try to change username: ${error} ${rest}`)
   }}
   onSubmit={(values, _, formApi) => {
-    // onUsernamePending(true)
     setFormStatus('PENDING', true)
+    setFormStatus('SUCCESS', false)
     changeUsernameQuery({ variables: { ...values } })
       .then(() => {
         setFormStatus('PENDING', false)
         setFormStatus('ERROR', false)
         setFormStatus('SUCCESS', true)
-        // onUsernamePending(false)
-        // onUsernameSuccess(true)
-        // onUsernameError(false)
         dispatchUsernameChange(values.username)
         formApi.resetAll()
       })
       .catch(error => {
         setFormStatus('PENDING', false)
         setFormStatus('ERROR', true)
-        // onUsernamePending(false)
-        // onUsernameError(true)
         Raven.captureException(`User try to change username: ${error}`)
       })
   }}
