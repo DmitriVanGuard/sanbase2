@@ -43,17 +43,19 @@ class rAccount extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      email: {
+      emailForm: {
         PENDING: false,
         ERROR: false,
         SUCCESS: false
       },
-      username: {
+      usernameForm: {
         PENDING: false,
         ERROR: false,
         SUCCESS: false
       }
     }
+    this.emailFormKey = 'emailForm'
+    this.usernameFormKey = 'usernameForm'
   }
 
   setFormStatus (form) {
@@ -71,7 +73,7 @@ class rAccount extends Component {
 
   render () {
     const { user, loading, dispatchUserLogout, dispatchEmailChange, dispatchUsernameChange } = this.props
-    const { email, username } = this.state
+    const { emailForm, usernameForm } = this.state
     return (
       <div className='page account'>
         <AccountHeader />
@@ -85,26 +87,26 @@ class rAccount extends Component {
             ]}
           />}
 
-        {email.SUCCESS &&
+        {emailForm.SUCCESS &&
           <Message
             className='account-message'
             positive
             content={`Email was changed to ${user.email}!`}
           />}
-        {email.ERROR &&
+        {emailForm.ERROR &&
           <Message
             className='account-message'
             negative
             header='Failed to change email!'
             list={['Try again later...']}
           />}
-        {username.SUCCESS &&
+        {usernameForm.SUCCESS &&
           <Message
             className='account-message'
             positive
             content={`Username was changed to ${user.username}!`}
           />}
-        {username.ERROR &&
+        {usernameForm.ERROR &&
           <Message
             className='account-message'
             negative
@@ -118,16 +120,16 @@ class rAccount extends Component {
             dispatchEmailChange={dispatchEmailChange}
             successValidator={successValidator}
             errorValidator={errorValidator}
-            setFormStatus={this.setFormStatus('email')}
-            isEmailPending={email.PENDING}
+            setFormStatus={this.setFormStatus(this.emailFormKey)}
+            isEmailPending={emailForm.PENDING}
           />
           <AccountUsernameForm
             user={user}
             dispatchUsernameChange={dispatchUsernameChange}
             successValidator={successValidator}
             errorValidator={errorValidator}
-            setFormStatus={this.setFormStatus('username')}
-            isUsernamePending={username.PENDING}
+            setFormStatus={this.setFormStatus(this.usernameFormKey)}
+            isUsernamePending={usernameForm.PENDING}
           />
           <br />
           <AccountEthKeyForm user={user} loading={loading} />
@@ -156,5 +158,5 @@ const mapDispatchToProps = dispatch => ({
   })
 })
 
-export const UnwrappedAccount = rAccount
+export const UnwrappedAccount = rAccount // For tests
 export default connect(mapStateToProps, mapDispatchToProps)(rAccount)
