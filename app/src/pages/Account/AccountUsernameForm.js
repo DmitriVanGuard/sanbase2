@@ -16,6 +16,8 @@ const AccountUsernameForm = ({ user, changeUsernameQuery, dispatchUsernameChange
     Raven.captureException(`User try to change username: ${error} ${rest}`)
   }}
   onSubmit={(values, _, formApi) => {
+    if (!values.username) return // To fix react-form bug, that leads to empty graphql query
+
     setFormStatus('PENDING', true)
     setFormStatus('SUCCESS', false)
     changeUsernameQuery({ variables: { ...values } })

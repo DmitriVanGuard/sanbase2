@@ -18,6 +18,8 @@ const AccountEmailForm = ({ user, changeEmailQuery, dispatchEmailChange, isEmail
         Raven.captureException(`User try to change email: ${error} ${rest}`)
       }}
       onSubmit={(values, _, formApi) => {
+        if (!values.email) return // To fix react-form bug, that leads to empty graphql query
+
         setFormStatus('PENDING', true)
         setFormStatus('SUCCESS', false)
         changeEmailQuery({ variables: { ...values } })

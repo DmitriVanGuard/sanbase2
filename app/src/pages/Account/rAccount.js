@@ -40,7 +40,7 @@ const successValidator = ({ email, username }) => {
 }
 
 class rAccount extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       emailForm: {
@@ -58,7 +58,7 @@ class rAccount extends Component {
     this.usernameFormKey = 'usernameForm'
   }
 
-  setFormStatus (form) {
+  setFormStatus(form) {
     return (status, value) => {
       this.setState(prevState => {
         const newFormState = { ...prevState[form] }
@@ -71,7 +71,7 @@ class rAccount extends Component {
     }
   }
 
-  render () {
+  render() {
     const { user, loading, dispatchUserLogout, dispatchEmailChange, dispatchUsernameChange } = this.props
     const { emailForm, usernameForm } = this.state
     return (
@@ -91,7 +91,7 @@ class rAccount extends Component {
           <Message
             className='account-message'
             positive
-            content={`Email was changed to ${user.email}!`}
+            content={`Email was changed to "${user.email}"!`}
           />}
         {emailForm.ERROR &&
           <Message
@@ -104,7 +104,7 @@ class rAccount extends Component {
           <Message
             className='account-message'
             positive
-            content={`Username was changed to ${user.username}!`}
+            content={`Username was changed to "${user.username}"!`}
           />}
         {usernameForm.ERROR &&
           <Message
