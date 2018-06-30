@@ -11,7 +11,6 @@ const AccountUsernameForm = ({ user, changeUsernameQuery, dispatchUsernameChange
   validateError={errorValidator}
   validateSuccess={successValidator}
   onSubmitFailure={(error, ...rest) => {
-    // onUsernameError(true)
     setFormStatus('ERROR', true)
     setFormStatus('SUCCESS', false)
     Raven.captureException(`User try to change username: ${error} ${rest}`)
@@ -52,7 +51,7 @@ const AccountUsernameForm = ({ user, changeUsernameQuery, dispatchUsernameChange
         formApi={formApi}
       />
 
-      {formApi.getSuccess().username &&
+      {!console.log(formApi.getSuccess().username) && formApi.getSuccess().username &&
         <FadeIn
           className='account-settings-email__button-container'
           duration='0.7s'

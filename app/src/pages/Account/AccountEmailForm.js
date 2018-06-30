@@ -21,7 +21,7 @@ const AccountEmailForm = ({ user, changeEmailQuery, dispatchEmailChange, isEmail
         setFormStatus('PENDING', true)
         setFormStatus('SUCCESS', false)
         changeEmailQuery({ variables: { ...values } })
-          .then(data => {
+          .then(() => {
             setFormStatus('PENDING', false)
             setFormStatus('ERROR', false)
             setFormStatus('SUCCESS', true)

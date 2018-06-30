@@ -67,15 +67,15 @@ const LoadableInsightsNew = Loadable({
 })
 
 class Route extends React.Component {
-  componentWillMount() {
+  componentWillMount () {
     nprogress.start()
   }
 
-  componentDidMount() {
+  componentDidMount () {
     nprogress.done()
   }
 
-  render() {
+  render () {
     return (
       <BasicRoute {...this.props} />
     )
@@ -88,94 +88,94 @@ export const App = ({
   isFullscreenMobile,
   isOffline
 }) => (
-    <div className='App'>
-      {isOffline &&
-        <FadeInDown
-          className='offline-status-message'
-          duration='1.0s'
-          timingFunction='ease-out'
-          as='div'>
+  <div className='App'>
+    {isOffline &&
+    <FadeInDown
+      className='offline-status-message'
+      duration='1.0s'
+      timingFunction='ease-out'
+      as='div'>
           OFFLINE
     </FadeInDown>}
-      {isFullscreenMobile
+    {isFullscreenMobile
         ? undefined
         : (isDesktop
           ? <Menu />
           : <MobileMenu />)}
-      <ErrorBoundary>
-        <Switch>
-          <Route exact path='/projects' render={props => {
-            if (isDesktop) {
-              return (
-                <Cashflow
-                  preload={() => LoadableDetailedPage.preload()}
-                  {...props} />
-              )
-            }
+    <ErrorBoundary>
+      <Switch>
+        <Route exact path='/projects' render={props => {
+          if (isDesktop) {
             return (
-              <CashflowMobile {...props} />
-            )
-          }} />
-          <Route exact path='/currencies' render={props => {
-            if (isDesktop) {
-              return (
-                <Currencies
-                  preload={() => LoadableDetailedPage.preload()}
-                  {...props} />
-              )
-            }
-            return (
-              <CurrenciesMobile {...props} />
-            )
-          }} />
-          <Route exact path='/favorites' render={props => {
-            if (isDesktop && isLoggedIn) {
-              return (
-                <Favorites
-                  preload={() => LoadableDetailedPage.preload()}
-                  {...props} />
-              )
-            }
-            return (
-              <Redirect from='/favorites' to='/projects' />
-            )
-          }} />
-          <Route exact path='/roadmap' component={Roadmap} />
-          <Route exact path='/signals' component={Signals} />
-          <Route path='/insights/new' component={LoadableInsightsNew} />
-          <Route path='/insights/update/:insightId' component={LoadableInsightsNew} />
-          <Route exact path='/insights' component={LoadableInsights} />
-          <Route exact path='/insights/newest' component={LoadableInsights} />
-          <Route exact path='/insights/popular' component={LoadableInsights} />
-          <Route exact path='/insights/my' component={LoadableInsights} />
-          <Route exact path='/insights/users/:userId' component={LoadableInsights} />
-          <Route exact path='/insights/:insightId' component={LoadableInsight} />
-          <Route exact path='/projects/:slug' render={props => (
-            <LoadableDetailedPage isDesktop={isDesktop} {...props} />)} />
-          <Route exact path='/account' component={Account} />
-          <Route exact path='/status' component={Status} />
-          <Route exact path='/build' component={BuildChallenge} />
-          <Route exact path='/privacy-policy' component={PrivacyPolicyPage} />
-          <Route path='/email_login' component={EmailLoginVerification} />
-          <Route path='/apidocs' component={ApiDocs} />
-          <Route path='/apiexplorer' component={ApiExplorer} />
-          <Route
-            exact
-            path='/login'
-            render={props => (
-              <LoginPage
-                isDesktop={isDesktop}
+              <Cashflow
+                preload={() => LoadableDetailedPage.preload()}
                 {...props} />
+            )
+          }
+          return (
+            <CashflowMobile {...props} />
+          )
+        }} />
+        <Route exact path='/currencies' render={props => {
+          if (isDesktop) {
+            return (
+              <Currencies
+                preload={() => LoadableDetailedPage.preload()}
+                {...props} />
+            )
+          }
+          return (
+            <CurrenciesMobile {...props} />
+          )
+        }} />
+        <Route exact path='/favorites' render={props => {
+          if (isDesktop && isLoggedIn) {
+            return (
+              <Favorites
+                preload={() => LoadableDetailedPage.preload()}
+                {...props} />
+            )
+          }
+          return (
+            <Redirect from='/favorites' to='/projects' />
+          )
+        }} />
+        <Route exact path='/roadmap' component={Roadmap} />
+        <Route exact path='/signals' component={Signals} />
+        <Route path='/insights/new' component={LoadableInsightsNew} />
+        <Route path='/insights/update/:insightId' component={LoadableInsightsNew} />
+        <Route exact path='/insights' component={LoadableInsights} />
+        <Route exact path='/insights/newest' component={LoadableInsights} />
+        <Route exact path='/insights/popular' component={LoadableInsights} />
+        <Route exact path='/insights/my' component={LoadableInsights} />
+        <Route exact path='/insights/users/:userId' component={LoadableInsights} />
+        <Route exact path='/insights/:insightId' component={LoadableInsight} />
+        <Route exact path='/projects/:slug' render={props => (
+          <LoadableDetailedPage isDesktop={isDesktop} {...props} />)} />
+        <Route exact path='/account' component={Account} />
+        <Route exact path='/status' component={Status} />
+        <Route exact path='/build' component={BuildChallenge} />
+        <Route exact path='/privacy-policy' component={PrivacyPolicyPage} />
+        <Route path='/email_login' component={EmailLoginVerification} />
+        <Route path='/apidocs' component={ApiDocs} />
+        <Route path='/apiexplorer' component={ApiExplorer} />
+        <Route
+          exact
+          path='/login'
+          render={props => (
+            <LoginPage
+              isDesktop={isDesktop}
+              {...props} />
             )}
           />
-          <Redirect from='/' to='/projects' />
-        </Switch>
-      </ErrorBoundary>
-      <Notification />
-      <FeedbackModal />
-      <GDPRModal />
-      {isDesktop && <Footer />}
-    </div>
+        <Redirect from='/' to='/projects' />
+      </Switch>
+    </ErrorBoundary>
+    <Notification />
+    <FeedbackModal />
+    <GDPRModal />
+    {isDesktop && <Footer />}
+  </div>
   )
 
 const mapStateToProps = state => {
