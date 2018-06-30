@@ -44,14 +44,12 @@ const AccountUsernameForm = ({ user, changeUsernameQuery, dispatchUsernameChange
         disabled={isUsernamePending}
         placeholder={
           user.username
-          // user.username !== user.ethAccounts[0].address ? user.username : undefined
-          /* TODO: Change user store schema */
         }
         className='account-settings-email__input'
         formApi={formApi}
       />
 
-      {!console.log(formApi.getSuccess().username) && formApi.getSuccess().username &&
+      {formApi.getSuccess().username &&
         <FadeIn
           className='account-settings-email__button-container'
           duration='0.7s'
